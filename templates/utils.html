@@ -24,7 +24,7 @@
     {% for attachment in toot.media_attachments %}
     {% if let Image = attachment.type %}
     <div class="image-container">
-        <a href="{{attachment.url}}"><img src="{{attachment.url}}" class="image-post"></a>
+        <a href="/media/{{attachment.id}}"><img src="/media/{{attachment.id}}" class="image-post"></a>
     </div>
     {% endif %}
     {% endfor %}

@@ -1,10 +1,11 @@
 mod about;
+mod media;
 mod search;
+pub mod thread;
 mod timeline;
 mod utils;
-pub mod thread;
 
-use axum::{routing::get, Router};
+use axum::{http::request, routing::get, Router};
 use megalodon::{entities::Instance, Megalodon};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
@@ -35,6 +36,7 @@ async fn run() -> anyhow::Result<()> {
         client,
         instance,
         config,
+        webclient: reqwest::Client::new(),
     });
 
     let app = Router::new()
@@ -44,6 +46,7 @@ async fn run() -> anyhow::Result<()> {
         .route("/federation", get(timeline::federation))
         //.route("/:user", get(root))
         .route("/object/:id", get(thread::thread))
+        .route("/media/:id", get(media::media))
         //.route("/search", get(search))
         .with_state(state);
 
@@ -58,6 +61,7 @@ pub struct ClientState {
     pub client: Client,
     pub instance: Instance,
     pub config: Config,
+    pub webclient: reqwest::Client,
 }
 
 type Client = Box<dyn Megalodon + Sync + Send>;

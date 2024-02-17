@@ -7,9 +7,7 @@ use axum::{
 };
 use megalodon::{
     entities::Status,
-    megalodon::{
-        GetHomeTimelineInputOptions, GetPublicTimelineInputOptions,
-    },
+    megalodon::{GetHomeTimelineInputOptions, GetPublicTimelineInputOptions},
 };
 use serde::Deserialize;
 
