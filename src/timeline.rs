@@ -39,7 +39,7 @@ pub async fn home(
     let first_id = statuses.first().map(|f| f.id.clone());
     let last_id = statuses.last().map(|f| f.id.clone());
     Ok(HomeTemplate {
-        instance: utils::remove_protocol(state.instance.uri.clone()),
+        instance: utils::remove_protocol(state.config.instance.clone()),
         instance_name: state.instance.title.clone(),
         statuses,
         first_id,
@@ -63,7 +63,7 @@ pub async fn federation(
     let first_id = statuses.first().map(|f| f.id.clone());
     let last_id = statuses.last().map(|f| f.id.clone());
     Ok(HomeTemplate {
-        instance: utils::remove_protocol(state.instance.uri.clone()),
+        instance: utils::remove_protocol(state.config.instance.clone()),
         instance_name: state.instance.title.clone(),
         statuses,
         first_id,

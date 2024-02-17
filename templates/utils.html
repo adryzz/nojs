@@ -1,0 +1,46 @@
+{% macro render_toot(toot) %}
+    {% let retooter = crate::utils::get_retooter(toot) %}
+    {% if let Some(retoot) = toot.reblog %}
+        {% call render_toot_inner(retoot, retooter) %}
+    {% else %}
+        {% call render_toot_inner(toot, retooter) %}
+    {% endif %}
+{% endmacro %}
+
+{% macro render_toot_inner(toot, acct) %}
+<div class="instance-post">
+    {% if let Some(retooter) = acct %}
+        {% call render_name(toot.account) %} - retoot by {% call render_name(retooter) %}
+    {% else %}
+        {% call render_name(toot.account) %}
+    {% endif %}
+    <div class="toot-content">
+        {{toot.content|safe}}
+    </div>
+    {% for attachment in toot.media_attachments %}
+    {% if let Image = attachment.type %}
+    <div class="image-container">
+        <a href="{{attachment.url}}"><img src="{{attachment.url}}" class="image-post"></a>
+    </div>
+    {% endif %}
+    {% endfor %}
+    <div class="bottom-post-container">
+        <!-- TODO: color these if the user has reblogged/favorited -->
+        <small>{{toot.reblogs_count}} reblogs</small>
+        <small>{{toot.favourites_count}} favorites</small>
+        <small>{{toot.replies_count}} replies</small>
+        <small> - {{crate::utils::print_datetime(toot.created_at)}}</small>
+        {% if let Some(edited_time) = toot.edited_at %}
+        <small> - edited {{crate::utils::print_datetime(edited_time)}}</small>
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_name(account) %}
+{% if let Some(host) = crate::utils::try_get_filter_host(account.url, instance.as_ref()) %}
+<a href="/object/{{toot.id}}">{{toot.account.display_name}}</a> - <a class="spoiler" href="/@{{toot.account.username}}">@{{toot.account.username}}@{{host}}</a>
+{% else %}
+<a href="/object/{{toot.id}}">{{toot.account.display_name}}</a> - <a class="spoiler" href="/@{{toot.account.username}}">@{{toot.account.username}}</a>
+{% endif %}
+{% endmacro %}

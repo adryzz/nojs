@@ -1,5 +1,6 @@
 use axum::http::StatusCode;
 use chrono::{DateTime, Utc};
+use megalodon::entities::{Account, Status};
 
 pub fn remove_protocol(mut input: String) -> String {
     if input.starts_with("https://") {
@@ -45,4 +46,41 @@ pub fn print_datetime(date: &DateTime<Utc>) -> String {
         return format!("{}m", seconds / 60);
     }
     format!("{}s", seconds)
+}
+
+pub fn try_get_host(mut str: &str) -> Option<&str> {
+    if str.starts_with("https://") {
+        str = &str[8..];
+    } else if str.starts_with("http://") {
+        str = &str[7..];
+    }
+
+    if let Some(i) = str.find('/') {
+        str = &str[..i];
+    }
+
+    if let None = str.find('.') {
+        return None;
+    }
+
+    return Some(str);
+}
+
+pub fn try_get_filter_host<'a>(str: &'a str, filter: &str) -> Option<&'a str> {
+    let out = try_get_host(str);
+    if let Some(s) = out {
+        if s == filter {
+            return None;
+        }
+    }
+
+    return out;
+}
+
+pub fn get_retooter(toot: &Status) -> Option<Account> {
+    if let Some(_retoot) = &toot.reblog {
+        Some(toot.account.clone())
+    } else {
+        None
+    }
 }
