@@ -2,11 +2,12 @@ mod about;
 mod search;
 mod timeline;
 mod utils;
+pub mod thread;
 
 use axum::{routing::get, Router};
 use megalodon::{entities::Instance, Megalodon};
 use serde::{Deserialize, Serialize};
-use std::{ops::Deref, sync::Arc};
+use std::sync::Arc;
 
 #[tokio::main]
 async fn main() {
@@ -30,7 +31,11 @@ async fn run() -> anyhow::Result<()> {
     );
     let instance = client.get_instance().await?.json;
 
-    let state = Arc::new(ClientState { client, instance, config });
+    let state = Arc::new(ClientState {
+        client,
+        instance,
+        config,
+    });
 
     let app = Router::new()
         .route("/", get(timeline::home))
@@ -38,7 +43,7 @@ async fn run() -> anyhow::Result<()> {
         //.route("/home/:homeserver", get(root))
         .route("/federation", get(timeline::federation))
         //.route("/:user", get(root))
-        //.route("/object/:id", get(root))
+        .route("/object/:id", get(thread::thread))
         //.route("/search", get(search))
         .with_state(state);
 
@@ -52,11 +57,10 @@ async fn run() -> anyhow::Result<()> {
 pub struct ClientState {
     pub client: Client,
     pub instance: Instance,
-    pub config: Config
+    pub config: Config,
 }
 
 type Client = Box<dyn Megalodon + Sync + Send>;
-
 
 pub async fn parse_config() -> anyhow::Result<Config> {
     let config_text = tokio::fs::read_to_string("config.toml").await?;
@@ -69,5 +73,5 @@ pub async fn parse_config() -> anyhow::Result<Config> {
 pub struct Config {
     pub instance: String,
     pub token: String,
-    pub user_agent: String
+    pub user_agent: String,
 }

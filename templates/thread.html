@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{%- import "utils.html" as utils -%}
+
+{% block title %}{{instance_name}}{% endblock %}
+
+{% block bigh1 %}{{ instance_name }}{% endblock %}
+{% block smoltop %}{{ instance }}{% endblock %}
+
+
+{% block content %}
+    {% if let Some(ctx) = context %}
+        {% for toot in ctx.ancestors %}
+            {% call utils::render_toot_simple(toot) %}
+        {% endfor %}
+        <div class="separator-top"></div>
+        {% call utils::render_toot(status, "instance-post-highlighted") %}
+        <div class="separator-bottom"></div>
+        {% for toot in ctx.descendants %}
+            {% call utils::render_toot_simple(toot) %}
+        {% endfor %}
+    {% else %}
+        {% call utils::render_toot_simple(status) %}
+    {% endif %}
+{% endblock %}

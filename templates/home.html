@@ -8,6 +8,6 @@
 
 {% block content %}
     {% for toot in statuses %}
-        {% call utils::render_toot(toot) %}
+        {% call utils::render_toot_simple(toot) %}
     {% endfor %}
 {% endblock %}

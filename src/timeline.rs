@@ -5,12 +5,17 @@ use axum::{
     extract::{Query, State},
     http::StatusCode,
 };
-use megalodon::{entities::Status, megalodon::{GetHomeTimelineInputOptions, GetLocalTimelineInputOptions, GetPublicTimelineInputOptions}};
+use megalodon::{
+    entities::Status,
+    megalodon::{
+        GetHomeTimelineInputOptions, GetPublicTimelineInputOptions,
+    },
+};
 use serde::Deserialize;
 
 use crate::{
     utils::{self, Err},
-    Client, ClientState,
+    ClientState,
 };
 
 #[derive(Template)]
@@ -28,14 +33,18 @@ pub async fn home(
     Query(params): Query<TimelineParams>,
     State(state): State<Arc<ClientState>>,
 ) -> Result<HomeTemplate, StatusCode> {
-
     let opts = GetHomeTimelineInputOptions {
         limit: Some(20),
         since_id: params.after,
         max_id: params.before,
         ..Default::default()
     };
-    let statuses = state.client.get_home_timeline(Some(&opts)).await.to_code()?.json;
+    let statuses = state
+        .client
+        .get_home_timeline(Some(&opts))
+        .await
+        .to_code()?
+        .json;
     let first_id = statuses.first().map(|f| f.id.clone());
     let last_id = statuses.last().map(|f| f.id.clone());
     Ok(HomeTemplate {
@@ -59,7 +68,12 @@ pub async fn federation(
         ..Default::default()
     };
 
-    let statuses = state.client.get_public_timeline(Some(&opts)).await.to_code()?.json;
+    let statuses = state
+        .client
+        .get_public_timeline(Some(&opts))
+        .await
+        .to_code()?
+        .json;
     let first_id = statuses.first().map(|f| f.id.clone());
     let last_id = statuses.last().map(|f| f.id.clone());
     Ok(HomeTemplate {

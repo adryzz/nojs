@@ -1,14 +1,18 @@
-{% macro render_toot(toot) %}
+{% macro render_toot_simple(toot) %}
+    {% call render_toot(toot, "instance-post") %}
+{% endmacro %}
+
+{% macro render_toot(toot, class) %}
     {% let retooter = crate::utils::get_retooter(toot) %}
     {% if let Some(retoot) = toot.reblog %}
-        {% call render_toot_inner(retoot, retooter) %}
+        {% call render_toot_inner(retoot, retooter, class) %}
     {% else %}
-        {% call render_toot_inner(toot, retooter) %}
+        {% call render_toot_inner(toot, retooter, class) %}
     {% endif %}
 {% endmacro %}
 
-{% macro render_toot_inner(toot, acct) %}
-<div class="instance-post">
+{% macro render_toot_inner(toot, acct, class) %}
+<div class="{{class}}">
     {% if let Some(retooter) = acct %}
         <small>{% call render_name(toot.account) %} - retoot by {% call render_name(retooter) %}</small>
     {% else %}
@@ -33,6 +37,7 @@
         {% if let Some(edited_time) = toot.edited_at %}
         <small> - edited {{crate::utils::print_datetime(edited_time)}}</small>
         {% endif %}
+        <small> - <a href="/object/{{toot.id}}">expand</a></small>
     </div>
 </div>
 {% endmacro %}
