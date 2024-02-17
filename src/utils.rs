@@ -84,3 +84,18 @@ pub fn get_retooter(toot: &Status) -> Option<Account> {
         None
     }
 }
+
+pub fn remove_emotes(input: &str) -> String {
+    let mut result = String::new();
+    let mut in_sequence = false;
+    
+    for c in input.chars() {
+        if c == ':' {
+            in_sequence = !in_sequence;
+        } else if !in_sequence {
+            result.push(c);
+        }
+    }
+    
+    result
+}

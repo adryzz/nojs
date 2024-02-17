@@ -10,7 +10,7 @@
 {% macro render_toot_inner(toot, acct) %}
 <div class="instance-post">
     {% if let Some(retooter) = acct %}
-        {% call render_name(toot.account) %} - retoot by {% call render_name(retooter) %}
+        <small>{% call render_name(toot.account) %} - retoot by {% call render_name(retooter) %}</small>
     {% else %}
         {% call render_name(toot.account) %}
     {% endif %}
@@ -39,8 +39,8 @@
 
 {% macro render_name(account) %}
 {% if let Some(host) = crate::utils::try_get_filter_host(account.url, instance.as_ref()) %}
-<a href="/object/{{toot.id}}">{{toot.account.display_name}}</a> - <a class="spoiler" href="/@{{toot.account.username}}">@{{toot.account.username}}@{{host}}</a>
+<a href="/@{{toot.account.id}}">{{crate::utils::remove_emotes(toot.account.display_name)}}</a> - <a class="spoiler" href="/@{{toot.account.id}}">@{{toot.account.username}}@{{host}}</a>
 {% else %}
-<a href="/object/{{toot.id}}">{{toot.account.display_name}}</a> - <a class="spoiler" href="/@{{toot.account.username}}">@{{toot.account.username}}</a>
+<a href="/@{{toot.account.id}}">{{crate::utils::remove_emotes(toot.account.display_name)}} - <a class="spoiler" href="/@{{toot.account.id}}">@{{toot.account.username}}</a>
 {% endif %}
 {% endmacro %}
