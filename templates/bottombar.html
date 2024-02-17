@@ -1,0 +1,7 @@
+{% if let Some(fid) = first_id %}
+<a href="/home?first_id={{fid}}">previous</a>
+{% endif %}
+
+{% if let Some(lid) = last_id %}
+<a href="/home?last_id={{lid}}">next</a>
+{% endif %}

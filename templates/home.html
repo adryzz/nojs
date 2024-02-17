@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{%- import "utils.html" as utils -%}
+
+{% block title %}{{instance_name}}{% endblock %}
+
+{% block bigh1 %}{{ instance_name }}{% endblock %}
+{% block smoltop %}{{ instance }}{% endblock %}
+
+{% block content %}
+
+{% for toot in statuses %}
+    <div class="instance-post">
+        <a href="/object/{{toot.id}}">{{toot.account.display_name}}</a> - <a class="spoiler" href="/@{{toot.account.username}}">@{{toot.account.username}}</a>
+        {{toot.content|safe}}
+        {% for attachment in toot.media_attachments %}
+        {% if let Image = attachment.type %}
+        <div class="image-container">
+            <a href="{{attachment.url}}"><img src="{{attachment.url}}" class="image-post"></a>
+        </div>
+        {% endif %}
+        {% endfor %}
+        <div class="bottom-post-container">
+            <!-- TODO: color these if the user has reblogged/favorited -->
+            <small>{{toot.reblogs_count}} reblogs</small>
+            <small>{{toot.favourites_count}} favorites</small>
+            <small>{{toot.replies_count}} replies</small>
+            <small> - {{crate::utils::print_datetime(toot.created_at)}}</small>
+            {% if let Some(edited_time) = toot.edited_at %}
+            <small> - edited {{crate::utils::print_datetime(edited_time)}}</small>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+{% endblock %}
