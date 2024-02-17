@@ -35,8 +35,8 @@ async fn run() -> anyhow::Result<()> {
     let state = Arc::new(ClientState {
         client,
         instance,
+        webclient: reqwest::Client::builder().user_agent(config.user_agent.clone()).build()?,
         config,
-        webclient: reqwest::Client::new(),
     });
 
     let app = Router::new()
