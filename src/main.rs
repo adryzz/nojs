@@ -5,7 +5,7 @@ pub mod thread;
 mod timeline;
 mod utils;
 
-use axum::{http::request, routing::get, Router};
+use axum::{routing::get, Router};
 use megalodon::{entities::Instance, Megalodon};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;

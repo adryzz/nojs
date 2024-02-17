@@ -6,9 +6,8 @@ use axum::{
     http::StatusCode,
     response::Response,
 };
-use megalodon::entities::attachment::AttachmentType;
 
-use crate::{utils::Err, ClientState};
+use crate::ClientState;
 
 #[axum::debug_handler]
 pub async fn media(

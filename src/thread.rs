@@ -3,7 +3,7 @@ use std::sync::Arc;
 use askama::Template;
 use axum::{
     extract::{Path, Query, State},
-    http::{status, StatusCode},
+    http::StatusCode,
 };
 use megalodon::{
     entities::{Context, Status},
